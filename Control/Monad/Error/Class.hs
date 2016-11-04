@@ -64,7 +64,7 @@ import Control.Monad.Instances ()
 #endif
 
 import Data.Monoid
-import Prelude (Either(..), (.), IO)
+import Prelude (Either(..), (.), IO, Bool(..))
 
 {- |
 The strategy of combining computations that can throw exceptions
@@ -121,6 +121,12 @@ instance (Monad m, Error e) => MonadError e (ErrorT e m) where
 instance Monad m => MonadError e (ExceptT e m) where
     throwError = ExceptT.throwE
     catchError = ExceptT.catchE
+
+
+-- | Utility function: Throw given error on False.
+guardWith :: (MonadError e m) => e -> Bool -> m ()
+guardWith _ True = return ()
+guardWith e False = throwError e
 
 -- ---------------------------------------------------------------------------
 -- Instances for other mtl transformers
